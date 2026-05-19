@@ -1,0 +1,12 @@
+# Cloudflare Pages – Header-Konfiguration
+#
+# no-cache = Browser/CDN pruefen bei JEDEM Aufruf kurz beim Server nach.
+# Unveraendert -> 304 (winziger Response). Geaendert -> neue Datei.
+# Ergebnis: ein Re-Upload der Widget-Datei ist sofort auf allen Sites aktiv.
+#
+# Hinweis: KEIN CORS-Header noetig. Die Datei wird per <script src="">
+# geladen (klassisches Script) - das ist origin-uebergreifend erlaubt,
+# ganz ohne Access-Control-Header. CORS braeuchte man nur bei fetch().
+
+/feedback-widget.js
+  Cache-Control: no-cache
