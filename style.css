@@ -1003,8 +1003,8 @@ p {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
-    padding: 18px 24px !important;
-    margin: 6px 0 !important;
+    padding: 6px 20px !important;
+    margin: 4px 0 !important;
     background-color: var(--fg-color-0, rgba(0,0,0,0.04)) !important;
     border: 1.5px solid var(--fg-color-1, rgba(0,0,0,0.08)) !important;
     border-left: 4px solid var(--fg-color-3, #555) !important;
@@ -1043,8 +1043,8 @@ p {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
-    padding: 16px 20px !important;
-    margin: 6px 0 !important;
+    padding: 6px 20px !important;
+    margin: 4px 0 !important;
     background-color: var(--fg-color-0, rgba(0,0,0,0.04)) !important;
     border: 1.5px solid var(--fg-color-1, rgba(0,0,0,0.08)) !important;
     border-left: 4px solid var(--fg-color-3, #555) !important;
@@ -1080,4 +1080,23 @@ p {
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+/* --- Sidebar (Super-Navigation) kompakter ---
+   Schrift so groß wie das TOC rechts (15px), Sidebar etwas schmaler und
+   die Menüzeilen rechts straffer, damit die Pfeile näher am Rand sitzen.
+   --sidebar-width wird von Super-Core gesetzt; hier überschrieben, damit
+   Sidebar UND Content-Versatz konsistent schmaler werden. */
+:root {
+    --sidebar-width: 260px !important;   /* vorher 299px */
+}
+.super-navigation-menu__item-title {
+    font-size: 15px !important;
+}
+.super-search-input {
+    font-size: 14px !important;
+}
+.super-navigation-menu__list-header,
+.super-navigation-menu__item {
+    padding-right: 6px !important;
 }
