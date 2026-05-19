@@ -75,6 +75,7 @@
     }
     .sff-btn {
       margin-top: 0.5rem; width: 100%; max-width: 100%;
+      text-align: center;
       font-family: inherit; font-size: 0.8rem; font-weight: 500; color: inherit;
       background: rgba(128,128,128,0.12);
       background: color-mix(in srgb, currentColor 10%, transparent);
