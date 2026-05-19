@@ -10,3 +10,5 @@
 
 /feedback-widget.js
   Cache-Control: no-cache
+/style.css
+  Cache-Control: no-cache
