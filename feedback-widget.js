@@ -102,7 +102,6 @@
   var HTML = `
     <div class="sff-wrap">
       <p class="sff-title">Dein Feedback für diesen Artikel</p>
-      <p class="sff-desc">Etwas unklar oder ein Verbesserungsvorschlag? Schreib es uns – kurz genügt.</p>
       <form class="sff-form" novalidate>
         <input type="checkbox" name="botcheck" class="sff-hidden" tabindex="-1" aria-hidden="true">
         <textarea class="sff-field" name="message" aria-label="Dein Feedback"
