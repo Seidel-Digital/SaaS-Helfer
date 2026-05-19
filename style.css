@@ -1088,7 +1088,7 @@ p {
    --sidebar-width wird von Super-Core gesetzt; hier überschrieben, damit
    Sidebar UND Content-Versatz konsistent schmaler werden. */
 :root {
-    --sidebar-width: 260px !important;   /* vorher 299px */
+    --sidebar-width: 250px !important;   /* vorher 299px */
 }
 .super-navigation-menu__item-title {
     font-size: 15px !important;
