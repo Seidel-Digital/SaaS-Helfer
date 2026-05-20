@@ -1129,7 +1129,7 @@ p {
    --sidebar-width wird von Super-Core gesetzt; hier überschrieben, damit
    Sidebar UND Content-Versatz konsistent schmaler werden. */
 :root {
-    --sidebar-width: 260px !important;       /* vorher 299px */
+    --sidebar-width: 270px !important;       /* vorher 299px */
     --layout-max-width: 1400px !important;   /* vorher 900px — Artikel + Titel breiter,
                                                 ohne dass jede Seite auf Full-Width muss */
 }
