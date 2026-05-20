@@ -21,9 +21,6 @@
   const PROP_NAME = "Modul";
   const MODULES = {
 "Konto & Arbeitsumgebung": { url: "/onboarding-setup/konto-arbeitsumgebung", name: "Zurück zu Konto & Arbeitsumgebung" },
-"Kommunikations-Setup": { url: "/onboarding-setup/kommunikations-setup", name: "Zurück zu Kommunikations-Setup" },
-"Kontakte & Daten": { url: "/onboarding-setup/kontakte-daten", name: "Zurück zu Kontakte & Daten" },
-"Plattform-Einstieg": { url: "/onboarding-setup/plattform-einstieg", name: "Zurück zu Plattform-Einstieg" },
 "Mobile App": { url: "/onboarding-setup/mobile-app", name: "Zurück zu Mobile App" },
 "Tool-Migration": { url: "/onboarding-setup/tool-migration", name: "Zurück zu Tool-Migration" },
 "E-Mail-Marketing": { url: "/marketing-kommunikation/e-mail-marketing", name: "Zurück zu E-Mail-Marketing" },
