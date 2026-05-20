@@ -1251,10 +1251,10 @@ p {
    (border-radius:12px) kommt aus der Sidebar-Regel weiter oben. */
 .super-sidebar .super-navigation-menu__list-header,
 .super-sidebar .super-navigation-menu__item {
-    background: rgba(127, 127, 127, 0.09) !important;
+    background: rgba(127, 127, 127, 0.05) !important;
 }
 .super-sidebar .super-navigation-menu__list-header:hover,
 .super-sidebar .super-navigation-menu__item:hover,
 .super-sidebar .super-navigation-menu__item.active {
-    background: rgba(127, 127, 127, 0.18) !important;
+    background: rgba(127, 127, 127, 0.15) !important;
 }
