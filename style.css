@@ -939,7 +939,7 @@ p {
 }
 
 .super-navigation-menu__items .super-navigation-menu__list a{
- margin-bottom:10px;
+ margin-bottom:5px;
 }
 
 .super-navigation-menu__item svg:first-child:not(.super-navigation-menu__list .super-navigation-menu__item > svg:first-child), 
