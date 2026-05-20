@@ -1012,11 +1012,16 @@ p {
 
 /* --- Property-Block auf Artikelseiten ausblenden ---
    Bleibt per display:none im DOM, damit das Breadcrumb-Script die
-   Modul-Property weiterhin auslesen kann. Beide Selektoren bewusst
-   behalten — deckt Artikel- wie Collection-Seiten ab. */
+   Modul-Property weiterhin auslesen kann. Mehrere Selektoren bewusst
+   behalten — Super hat den Wrapper irgendwann von
+   .notion-page__properties-layout auf .notion-page__properties umbenannt
+   (Stand der gespeicherten Artikel-HTML). Beide Varianten + Collection /
+   Detail-Pendant stehen drin, damit der Block nicht wieder durchschlägt,
+   falls Super den Namen erneut anpasst. */
+.notion-page__properties,
+.notion-page__properties-layout,
 .notion-collection-page__properties,
-.notion-page__details,
-.notion-page__properties-layout {
+.notion-page__details {
     display: none !important;
 }
 
@@ -1089,6 +1094,26 @@ p {
 .notion-collection-list__item .notion-property__title svg:first-child,
 .notion-collection-list__item .notion-property__title img {
     display: none !important;
+}
+
+/* --- DB-View-Body nicht bündig am Sidebar-Rand ---
+   Das THEME setzt .notion-root { padding: 0 !important } (oben Zeile ~31).
+   Bei Artikeln gleicht der LAYOUT-FIX das per article-column-padding (28px)
+   wieder aus, sodass der Body etwas Luft zum Sidebar-Rand hat. Modul- bzw.
+   DB-View-Seiten haben aber keinen .notion-column-list — ihre Collection-
+   Container hängen direkt unter .notion-root.max-width und sitzen ohne
+   diese Regel direkt auf der Sidebar. 28px = identischer Versatz wie der
+   Artikel-Body. Mehrere View-Typen abgedeckt (list / gallery / board /
+   table / gruppierter Header), damit auch zukünftige Modul-Layouts die
+   Regel automatisch erben. */
+.notion-root.max-width > .notion-collection,
+.notion-root.max-width > .notion-collection-list,
+.notion-root.max-width > .notion-collection-gallery,
+.notion-root.max-width > .notion-collection-board,
+.notion-root.max-width > .notion-collection-table__wrapper,
+.notion-root.max-width > .notion-collection__header-wrapper {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
 }
 
 /* --- Native Notion-Kopfzeile (Icon + Titel) auf Artikeln zeigen ---
