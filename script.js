@@ -77,7 +77,7 @@
      Auf den Property-Block beschränkt — kein Ganzseiten-Scan. */
   function getModul() {
     const scopes = document.querySelectorAll(
-      ".notion-page__properties-layout, .notion-collection-page__properties, .notion-page__details"
+      ".notion-page__properties, .notion-page__properties-layout, .notion-collection-page__properties, .notion-page__details"
     );
     const roots = scopes.length ? scopes : [document.body];
     for (const root of roots) {
