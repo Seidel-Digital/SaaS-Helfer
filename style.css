@@ -570,7 +570,7 @@ ul>.notion-list-item:before {
     padding-bottom: 12px !important;
 }
 
-.gallery .notion-property__title .notion-property__title__icon-wrapper {
+.gallery.notion-property__title.notion-property__title__icon-wrapper {
     display: none !important;
 }
 
