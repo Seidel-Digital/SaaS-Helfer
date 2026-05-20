@@ -1200,7 +1200,7 @@ p {
    Sidebar UND Content-Versatz konsistent schmaler werden. */
 :root {
     --sidebar-width: 280px !important;       /* vorher 299px */
-    --layout-max-width: 1400px !important;   /* vorher 900px — Artikel + Titel breiter,
+    --layout-max-width: 1232px !important;   /* vorher 900px — Artikel + Titel breiter,
                                                 ohne dass jede Seite auf Full-Width muss */
 }
 .super-navigation-menu__item-title {
