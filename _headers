@@ -8,7 +8,7 @@
 # geladen (klassisches Script) - das ist origin-uebergreifend erlaubt,
 # ganz ohne Access-Control-Header. CORS braeuchte man nur bei fetch().
 
-/feedback-widget.js
-  Cache-Control: no-cache
-/style.css
-  Cache-Control: no-cache
+#/feedback-widget.js
+#  Cache-Control: no-cache
+#/style.css
+#  Cache-Control: no-cache
