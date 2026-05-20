@@ -1096,22 +1096,36 @@ p {
     display: none !important;
 }
 
-/* --- DB-View-Body nicht bündig am Sidebar-Rand ---
+/* --- Direkte Block-Kinder von .notion-root.max-width einrücken ---
    Das THEME setzt .notion-root { padding: 0 !important } (oben Zeile ~31).
    Bei Artikeln gleicht der LAYOUT-FIX das per article-column-padding (28px)
-   wieder aus, sodass der Body etwas Luft zum Sidebar-Rand hat. Modul- bzw.
-   DB-View-Seiten haben aber keinen .notion-column-list — ihre Collection-
-   Container hängen direkt unter .notion-root.max-width und sitzen ohne
-   diese Regel direkt auf der Sidebar. 28px = identischer Versatz wie der
-   Artikel-Body. Mehrere View-Typen abgedeckt (list / gallery / board /
-   table / gruppierter Header), damit auch zukünftige Modul-Layouts die
-   Regel automatisch erben. */
-.notion-root.max-width > .notion-collection,
-.notion-root.max-width > .notion-collection-list,
-.notion-root.max-width > .notion-collection-gallery,
-.notion-root.max-width > .notion-collection-board,
-.notion-root.max-width > .notion-collection-table__wrapper,
-.notion-root.max-width > .notion-collection__header-wrapper {
+   wieder aus, sodass der Body etwas Luft zum Sidebar-Rand hat. Modul-/
+   Root-Seiten haben aber oft keinen .notion-column-list — H2-Überschriften
+   und Collection-Container hängen direkt unter .notion-root.max-width und
+   säßen sonst bündig am Sidebar-Rand.
+
+   Selektor bewusst als universal-not gebaut statt als explizite Liste,
+   damit AUCH künftig hinzugefügte Block-Typen (Texte, Callouts, Bilder,
+   Toggles, weitere Heading-Levels) automatisch eingerückt werden — ohne
+   diese Regel nachpflegen zu müssen.
+
+   Ausschlüsse:
+   - .notion-column-list           → Artikel-Wrapper; Layout vom LAYOUT-FIX.
+   - .notion-page__properties* /
+     .notion-page__details         → Property-Wrapper; sind display:none.
+   - .notion-page                  → Link-to-Page-Karten; haben eigenes
+                                     Karten-Padding, das hier nicht
+                                     überschrieben werden soll.
+
+   Hinweis: Padding insettet den Block-Inhalt, nicht die Block-Aussenkante.
+   Reine Text-Blöcke (Heading, Text) verhalten sich damit visuell wie
+   erwartet. Blöcke mit sichtbarem Rand/Hintergrund (Callout, Quote)
+   würden hier nur ihren Inhalt einrücken, nicht ihre Kante — falls so
+   ein Block später als direktes Root-Kind auftaucht und das stört,
+   separat per margin oder zusätzlichem Selektor behandeln.
+
+   28px = exakt der Inset des Artikel-Bodys (LAYOUT-FIX column-padding). */
+.notion-root.max-width > *:not(.notion-column-list):not(.notion-page__properties):not(.notion-page__properties-layout):not(.notion-page__details):not(.notion-collection-page__properties):not(.notion-page) {
     padding-left: 28px !important;
     padding-right: 28px !important;
 }
