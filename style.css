@@ -983,15 +983,17 @@ p {
    Wird vom externen script.js als erstes Kind von <main> eingefügt
    (die Navbar ist deaktiviert). Sitzt damit oben im Content-Bereich,
    etwa auf Höhe der Such-Leiste in der Sidebar. Gleiche max-width und
-   gleicher Einzug wie die Kopfzeile -> der Link steht bündig unter dem
-   linken Rand des Titels.
+   gleiches padding-left wie .notion-header__content (siehe Kommentar
+   dort) -> Breadcrumb-Link, Titel UND Artikel-Body stehen auf jeder
+   Viewport-Breite an derselben x-Position. Werte (1232 / 28) deshalb
+   bewusst hardcoded statt über --layout-max-width / --padding-left.
    >>> Vertikale Position über padding-top (60px) feinjustieren. */
 .article-crumb {
     box-sizing: border-box;
     width: 100%;
-    max-width: var(--layout-max-width);
+    max-width: 1232px;
     margin: 0 auto;
-    padding: 60px var(--padding-right) 8px var(--padding-left);
+    padding: 60px 28px 8px 28px;
 }
 @media (max-width: 764px) {
     .article-crumb {
@@ -1153,15 +1155,32 @@ p {
     gap: 12px;
 }
 
-/* --- Artikeltitel auf die Content-Spalte ausrichten ---
-   Die Kopfzeile bekommt denselben horizontalen Einzug wie der Body,
-   indem sie Supers Layout-Variablen nutzt. Mobile separat, weil Super
-   dort --padding-left-mobile verwendet. Sollte der Titel danach zu weit
-   rechts/links sitzen, ist der Body nicht bei --padding-left — dann hier
-   den Wert anpassen. */
+/* --- Artikeltitel auf die Artikel-Spalte ausrichten ---
+   Der Titel sass vorher in einer Box mit max-width=--layout-max-width
+   (1400) und padding-left=--padding-left (96). Der Body sitzt aber in
+   .notion-column-list mit max-width=1300, darin die Artikel-Spalte
+   (max 960) + gap (32) + TOC (240) = 1232 effektive Breite, per
+   justify-content:center zentriert, mit padding-left=28 auf der
+   Spalte. Zwei unterschiedliche max-width-Werte = zwei unterschiedliche
+   Zentrierungs-Tempi -> auf engeren Viewports driftete der Titel nach
+   rechts vom Body weg.
+
+   Lösung: Title-Container mit denselben Eckwerten konfigurieren wie die
+   effektive Artikel-Spalte:
+     max-width      = 1232px   (= 960 + 32 + 240, art-col + gap + TOC)
+     padding-left   = 28px     (= LAYOUT-FIX article-column padding)
+   Dann zentriert die Header-Box auf jeder Viewport-Breite identisch zum
+   Body -> Titel + Body deckungsgleich, kein Drift mehr.
+
+   Hinweis: 1232 / 28 sind aus dem LAYOUT-FIX abgeleitet. Wer dort an
+   Artikel-Spalten-max-width, TOC-Breite, Gap oder Spalten-Padding dreht,
+   muss diese Werte hier mitziehen. */
+.notion-header__content.max-width {
+    max-width: 1232px !important;
+}
 .notion-header__content {
-    padding-left: var(--padding-left) !important;
-    padding-right: var(--padding-right) !important;
+    padding-left: 28px !important;
+    padding-right: 28px !important;
 }
 @media (max-width: 764px) {
     .notion-header__content {
