@@ -57,6 +57,10 @@ body {
     }
 }
 
+.super-sidebar .super-navigation-menu__list {
+    margin-bottom: 6px !important;
+}
+
 .super-navbar {
     border-bottom: 1px solid var(--color-border-default) !important;
     display: flex!important;
@@ -1249,9 +1253,11 @@ p {
    ist; Hover wird etwas dunkler für klares Feedback. Grau als rgba-
    Overlay, damit es in Light- UND Dark-Mode funktioniert. Die Pillenform
    (border-radius:12px) kommt aus der Sidebar-Regel weiter oben. */
-.super-sidebar .super-navigation-menu__list-header,
+.super-sidebar .super-navigation-menu__list-header {
+    background: rgba(127, 127, 127, 0.07) !important;  /* list title pill */
+}
 .super-sidebar .super-navigation-menu__item {
-    background: rgba(127, 127, 127, 0.05) !important;
+    background: rgba(127, 127, 127, 0.05) !important;  /* item pill */
 }
 .super-sidebar .super-navigation-menu__list-header:hover,
 .super-sidebar .super-navigation-menu__item:hover,
