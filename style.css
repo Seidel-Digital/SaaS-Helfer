@@ -791,7 +791,7 @@ p {
     }
 
     .notion-navbar__search {
-        right: 5px !important;
+        right: 15px !important;
     }
 
     .notion-header {
@@ -971,18 +971,32 @@ p {
    Kaskade überschreiben.
    ===================================================================== */
 
-/* --- Artikel → Modul Breadcrumb (in der Navbar) ---
-   Wird vom externen script.js befüllt. */
+/* --- Artikel → Modul Breadcrumb ---
+   Wird vom externen script.js als erstes Kind von <main> eingefügt
+   (die Navbar ist deaktiviert). Sitzt damit oben im Content-Bereich,
+   etwa auf Höhe der Such-Leiste in der Sidebar. Gleiche max-width und
+   gleicher Einzug wie die Kopfzeile -> der Link steht bündig unter dem
+   linken Rand des Titels.
+   >>> Vertikale Position über padding-top (60px) feinjustieren. */
 .article-crumb {
-    display: flex;
-    align-items: center;
-    margin-left: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--layout-max-width);
+    margin: 0 auto;
+    padding: 60px var(--padding-right) 8px var(--padding-left);
+}
+@media (max-width: 764px) {
+    .article-crumb {
+        padding-left: var(--padding-left-mobile);
+        padding-right: var(--padding-right-mobile);
+        padding-top: 24px;
+    }
 }
 .article-crumb a {
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
-    color: var(--navbar-text-color, var(--color-text-default));
+    color: var(--color-text-default);
     white-space: nowrap;
     transition: opacity .15s ease;
 }
@@ -1003,7 +1017,7 @@ p {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
-    padding: 6px 20px !important;
+    padding: 10px 20px !important;
     margin: 4px 0 !important;
     background-color: var(--fg-color-0, rgba(0,0,0,0.04)) !important;
     border: 1.5px solid var(--fg-color-1, rgba(0,0,0,0.08)) !important;
@@ -1021,8 +1035,7 @@ p {
 }
 
 .notion-page__icon {
-    font-size: 1.3rem !important;
-    flex-shrink: 0 !important;
+    display: none !important;
 }
 
 .notion-page__title {
@@ -1043,7 +1056,7 @@ p {
     display: flex !important;
     align-items: center !important;
     gap: 12px !important;
-    padding: 6px 20px !important;
+    padding: 10px 20px !important;
     margin: 4px 0 !important;
     background-color: var(--fg-color-0, rgba(0,0,0,0.04)) !important;
     border: 1.5px solid var(--fg-color-1, rgba(0,0,0,0.08)) !important;
@@ -1057,6 +1070,17 @@ p {
     background-color: var(--fg-color-1, rgba(0,0,0,0.07)) !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+}
+
+/* Seiten-Icon in der Listenansicht ausblenden.
+   Mehrere Selektoren, alle auf .notion-collection-list__item begrenzt,
+   damit nichts außerhalb der Liste betroffen ist. Gegen die echte
+   Listen-DOM prüfen — bleibt das Icon stehen, Klasse durchgeben. */
+.notion-collection-list__item .notion-page__icon,
+.notion-collection-list__item .notion-record-icon,
+.notion-collection-list__item .notion-property__title svg:first-child,
+.notion-collection-list__item .notion-property__title img {
+    display: none !important;
 }
 
 /* --- Native Notion-Kopfzeile (Icon + Titel) auf Artikeln zeigen ---
@@ -1082,13 +1106,32 @@ p {
     gap: 12px;
 }
 
+/* --- Artikeltitel auf die Content-Spalte ausrichten ---
+   Die Kopfzeile bekommt denselben horizontalen Einzug wie der Body,
+   indem sie Supers Layout-Variablen nutzt. Mobile separat, weil Super
+   dort --padding-left-mobile verwendet. Sollte der Titel danach zu weit
+   rechts/links sitzen, ist der Body nicht bei --padding-left — dann hier
+   den Wert anpassen. */
+.notion-header__content {
+    padding-left: var(--padding-left) !important;
+    padding-right: var(--padding-right) !important;
+}
+@media (max-width: 764px) {
+    .notion-header__content {
+        padding-left: var(--padding-left-mobile) !important;
+        padding-right: var(--padding-right-mobile) !important;
+    }
+}
+
 /* --- Sidebar (Super-Navigation) kompakter ---
    Schrift so groß wie das TOC rechts (15px), Sidebar etwas schmaler und
    die Menüzeilen rechts straffer, damit die Pfeile näher am Rand sitzen.
    --sidebar-width wird von Super-Core gesetzt; hier überschrieben, damit
    Sidebar UND Content-Versatz konsistent schmaler werden. */
 :root {
-    --sidebar-width: 250px !important;   /* vorher 299px */
+    --sidebar-width: 260px !important;       /* vorher 299px */
+    --layout-max-width: 1400px !important;   /* vorher 900px — Artikel + Titel breiter,
+                                                ohne dass jede Seite auf Full-Width muss */
 }
 .super-navigation-menu__item-title {
     font-size: 15px !important;
@@ -1098,5 +1141,54 @@ p {
 }
 .super-navigation-menu__list-header,
 .super-navigation-menu__item {
-    padding-right: 1px !important;
+    padding-right: 6px !important;
+}
+
+/* --- Navbar komplett ausblenden ---
+   Super rendert die Navbar mit der Klasse .hidden, sobald sie in den
+   Einstellungen deaktiviert ist (-> .super-navbar.hidden{display:none}).
+   Der THEME-Block weiter oben erzwingt sie aber per
+   .super-navbar{display:flex !important} wieder sichtbar. Diese
+   spezifischere Regel (.super-navbar.hidden) gewinnt und blendet die
+   Navbar endgültig aus — damit verschwindet auch das Navbar-Logo. */
+.super-navbar.hidden {
+    display: none !important;
+}
+
+/* --- Sidebar-Logo / Seitentitel ausblenden ---
+   Entfernt nur den Logo-Text-Link. Der Theme-Umschalter (Sonne) bleibt
+   erhalten und rückt nach rechts oben. So ist die Such-Leiste das erste
+   prominente Element der Sidebar.
+   >>> Soll auch der Umschalter weg, .super-sidebar__logo-wrapper komplett
+       auf display:none setzen. */
+.super-sidebar__logo {
+    display: none !important;
+}
+.super-sidebar__logo-wrapper {
+    justify-content: flex-end !important;
+}
+
+/* --- TOC-Spalte: Navbar-Höhe nicht mehr abziehen ---
+   Die rechte Spalte klebte per top:var(--navbar-height) unter der
+   (jetzt entfernten) Navbar und hatte dadurch einen 56px-Phantomversatz.
+   Ohne Navbar nur noch ein kleiner fester Abstand nach oben. */
+.notion-root > .notion-column-list > .notion-column:nth-child(2) {
+    top: 24px !important;
+    height: calc(100vh - 24px) !important;
+}
+
+/* --- Sidebar-Menü: Pillen mit dezenter Grund-Fläche ---
+   Bisher hatten die Einträge nur beim Hover eine graue Pille. Jetzt eine
+   hellere Standard-Fläche, damit jedes Modul auch ohne Hover sichtbar
+   ist; Hover wird etwas dunkler für klares Feedback. Grau als rgba-
+   Overlay, damit es in Light- UND Dark-Mode funktioniert. Die Pillenform
+   (border-radius:12px) kommt aus der Sidebar-Regel weiter oben. */
+.super-sidebar .super-navigation-menu__list-header,
+.super-sidebar .super-navigation-menu__item {
+    background: rgba(127, 127, 127, 0.09) !important;
+}
+.super-sidebar .super-navigation-menu__list-header:hover,
+.super-sidebar .super-navigation-menu__item:hover,
+.super-sidebar .super-navigation-menu__item.active {
+    background: rgba(127, 127, 127, 0.18) !important;
 }
