@@ -1,11 +1,12 @@
 /* =====================================================================
    SaaS-Helfer KB — script.js
-   Artikel → Modul Breadcrumb in der Navbar.
+   Artikel → Modul Breadcrumb, oben im Content-Bereich.
    Extern laden mit defer:  <script defer src=".../script.js?v=1"></script>
 
-   Hinweis: Der alte URL-Klassen-Code (modul-uebersicht) und der
-   In-Content-Parent-Link wurden entfernt — beides stammte aus der
-   alten Struktur (Artikel als Unterseiten von Modulseiten).
+   Hinweis: Die Navbar ist deaktiviert, daher wird das Breadcrumb als
+   erstes Kind von <main> eingefügt (früher in der Navbar). Der alte
+   URL-Klassen-Code und der In-Content-Parent-Link wurden entfernt —
+   beides stammte aus der alten Struktur (Artikel als Modul-Unterseiten).
    ===================================================================== */
 (function () {
   "use strict";
@@ -47,7 +48,7 @@
     return null;
   }
 
-  /* Crumb in der Navbar bauen / aktualisieren (idempotent, günstig). */
+  /* Crumb oben im Content-Bereich bauen / aktualisieren (idempotent). */
   function refresh() {
     const val = getModul();
     const m   = val && MODULES[val];
@@ -63,8 +64,8 @@
       if (a && a.getAttribute("href") === m.url) return;      // schon korrekt
       bar.remove();
     }
-    const content = document.querySelector(".super-navbar__content");
-    if (!content) return;
+    const main = document.querySelector("main.super-content");
+    if (!main) return;
 
     const wrap = document.createElement("div");
     wrap.className = "article-crumb";
@@ -73,9 +74,7 @@
     a.textContent = "‹ " + m.name;
     wrap.appendChild(a);
 
-    const logo = content.querySelector(".super-navbar__logo");
-    if (logo) logo.after(wrap);
-    else content.prepend(wrap);
+    main.prepend(wrap);                                       // erstes Element im Content
   }
 
   /* Bei Initial-Load und nach jeder Client-Navigation neu ausführen.
