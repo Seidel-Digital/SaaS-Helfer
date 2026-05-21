@@ -1290,7 +1290,7 @@ p {
     background: rgba(127, 127, 127, 0.15) !important;
 }
 
-#block-36743843e4d080c7a5b0dc0a7aa312e1 { 
+#block-36743843e4d080c7a5b0dc0a7aa312e1, #block-36743843e4d08006938fee779dde8885, #block-36743843e4d080a5858ac7d9946708fa { 
    font-family: 'Caveat', cursive;
    font-size: calc(var(--heading-size) * 2);
 }
