@@ -166,7 +166,7 @@ body {
     padding: 0px !important;
     display: flex !important;
     align-items: center !important;
-    font-size: 2.2rem !important;
+    font-size: 2.5rem !important;
     letter-spacing: -1px !important;
     font-weight: 600 !important;
     font-size: 40px !important;
@@ -1293,10 +1293,10 @@ p {
 
 #block-36743843e4d080c7a5b0dc0a7aa312e1, #block-36743843e4d08006938fee779dde8885, #block-36743843e4d080a5858ac7d9946708fa { 
    font-family: 'Caveat', cursive;
-   font-size: calc(var(--heading-size) * 2);
+   font-size: 2rem !important;;
 }
 
 h2.notion-heading { 
    font-family: 'Lora';
-   font-size: calc(var(--heading-size) * 2.5);
+   font-size: 2.5rem !important;;
 }
