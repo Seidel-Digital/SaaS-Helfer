@@ -1294,3 +1294,7 @@ p {
    font-family: 'Caveat', cursive;
    font-size: calc(var(--heading-size) * 2);
 }
+
+h2.notion-heading { 
+   font-family: 'Lora';
+}
