@@ -59,6 +59,7 @@
    */
   function findSearchBar() {
     const selectors = [
+      '.super-search-input',
       'input[placeholder="Search"]',
       'input[placeholder="Suchen"]',
       '[role="search"] input',
