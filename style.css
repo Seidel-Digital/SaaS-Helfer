@@ -1179,15 +1179,34 @@ p {
    Hinweis: 1232 / 28 sind aus dem LAYOUT-FIX abgeleitet. Wer dort an
    Artikel-Spalten-max-width, TOC-Breite, Gap oder Spalten-Padding dreht,
    muss diese Werte hier mitziehen. */
-.notion-header__content.max-width {
-    max-width: 1232px !important;
-}
+
 .notion-header__content {
     padding-left: 28px !important;
     padding-right: 28px !important;
 }
 @media (max-width: 764px) {
     .notion-header__content {
+        padding-left: var(--padding-left-mobile) !important;
+        padding-right: var(--padding-right-mobile) !important;
+    }
+}
+
+/* --- Titel-Ausrichtung: Header-Content auf beide Selektoren erzwingen ---
+   Super's super.css setzt padding-left: var(--padding-left) (96px) auf dem
+   Zwei-Klassen-Selektor .notion-header__content.max-width — höhere Spezifität
+   als unser .notion-header__content (ein Klasse). Deshalb driftet der Titel
+   nach rechts weg. Fix: gleichen Wert UND margin:0 auto explizit auf dem
+   spezifischeren Selektor erzwingen, exakt wie bei .article-crumb.         */
+.notion-header__content.max-width {
+    max-width: 1232px !important;
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 764px) {
+    .notion-header__content.max-width {
         padding-left: var(--padding-left-mobile) !important;
         padding-right: var(--padding-right-mobile) !important;
     }
