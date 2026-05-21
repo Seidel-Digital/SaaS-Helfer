@@ -61,8 +61,8 @@
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
 
-    // START: obere Mitte des "Die Suchleiste"-Blocks
-    const x1 = targetRect.left + targetRect.width * 0.3 + scrollX;
+    // START: obere linke Ecke des "Die Suchleiste"-Blocks
+    const x1 = targetRect.left + scrollX;
     const y1 = targetRect.top  + scrollY;
 
     // ENDE (Pfeilspitze): rechte Mitte der Suchleiste
