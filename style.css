@@ -1298,5 +1298,5 @@ p {
 
 h2.notion-heading { 
    font-family: 'Lora';
-   font-size: calc(var(--heading-size) * 3);
+   font-size: calc(var(--heading-size) * 2.5);
 }
