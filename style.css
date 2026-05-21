@@ -1292,4 +1292,5 @@ p {
 
 #block-36743843e4d080c7a5b0dc0a7aa312e1 { 
    font-family: 'Caveat', cursive;
+   font-size: calc(var(--heading-size) * 2);
 }
