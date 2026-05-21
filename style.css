@@ -171,6 +171,7 @@ body {
     font-weight: 700 !important;
     font-size: 40px !important;
     margin-top: 25px !important;
+   font-family: 'Lora';
 }
 
 .notion-header__icon-wrapper {
@@ -1297,4 +1298,5 @@ p {
 
 h2.notion-heading { 
    font-family: 'Lora';
+   font-size: calc(var(--heading-size) * 2);
 }
