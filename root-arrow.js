@@ -44,7 +44,7 @@
       color:       "#2a2a2a",
       curvature:   0.4,
       toSide:      "left",
-      curveDir:    "up",
+      curveDir:    "down",
       endMidpoint: false,
       behind:      true,
       fromSide:    "right",        // NEU
