@@ -1,43 +1,46 @@
 /**
  * notion-arrow.js
- * Verbindet "Die Suchleiste"-Block mit der Suchleiste per handgezeichnetem SVG-Pfeil.
+ * Verbindet mehrere Notion-Blöcke mit ihren Ziel-Elementen per handgezeichnetem SVG-Pfeil.
  * Einfügen in Super.so → Settings → Custom Code → Body (End)
  */
 
 (function () {
 
   // ─── KONFIGURATION ──────────────────────────────────────────────────────────
-  const CONFIG = {
-    targetBlockId: "block-36743843e4d080c7a5b0dc0a7aa312e1",
-    color:         "#2a2a2a",   // Dunkel, wie handgezeichnet
-    strokeWidth:   2,
-    curvature:     0.5,
-    initDelay:     1200,
-  };
+  const ARROWS = [
+    {
+      // "Die Suchleiste" → Suchleiste
+      fromBlockId:  "block-36743843e4d080c7a5b0dc0a7aa312e1",
+      toSelector:   ".super-search-input",
+      color:        "#2a2a2a",
+      curvature:    0.5,
+    },
+    {
+      // "Die Navigation" → Navigationsmenü
+      fromBlockId:  "block-36743843e4d08006938fee779dde8885",
+      toSelector:   ".super-navigation-menu__items",
+      color:        "#2a2a2a",
+      curvature:    0.5,
+    },
+    {
+      // "Feedback-Formular" → Feedback-Anker
+      fromBlockId:  "block-36743843e4d080a5858ac7d9946708fa",
+      toSelector:   ".sff-anchor",
+      color:        "#2a2a2a",
+      curvature:    0.5,
+    },
+  ];
+
+  const STROKE_WIDTH = 2;
+  const INIT_DELAY   = 1200;
   // ────────────────────────────────────────────────────────────────────────────
 
 
-  function findSearchBar() {
-    const selectors = [
-      ".super-search-input",
-      'input[placeholder="Search"]',
-      'input[placeholder="Suchen"]',
-      "[role=\"search\"] input",
-      "[placeholder*=\"Search\"]",
-    ];
-    for (const sel of selectors) {
-      const el = document.querySelector(sel);
-      if (el) return el;
-    }
-    return null;
-  }
-
-
-  function findTargetBlock(blockId) {
+  function findBlock(blockId) {
     const byId = document.getElementById(blockId);
     if (byId) return byId;
 
-    const rawId = blockId.replace(/^block-/, "");
+    const rawId  = blockId.replace(/^block-/, "");
     const byData = document.querySelector('[data-block-id="' + rawId + '"]');
     if (byData) return byData;
 
@@ -51,123 +54,116 @@
   }
 
 
-  function drawArrow(searchEl, targetEl) {
-    const old = document.getElementById("notion-arrow-svg");
-    if (old) old.remove();
+  function buildArrow(fromEl, toEl, color, curvature, svgNS, markerId) {
+    const fromRect = fromEl.getBoundingClientRect();
+    const toRect   = toEl.getBoundingClientRect();
+    const sx = window.scrollX;
+    const sy = window.scrollY;
 
-    const searchRect = searchEl.getBoundingClientRect();
-    const targetRect = targetEl.getBoundingClientRect();
+    // START: obere linke Ecke des Quell-Blocks
+    const x1 = fromRect.left + sx;
+    const y1 = fromRect.top  + sy;
 
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
+    // ENDE (Pfeilspitze): rechte Mitte des Ziel-Elements
+    const x2 = toRect.right + sx;
+    const y2 = toRect.top + toRect.height / 2 + sy;
 
-    // START: obere linke Ecke des "Die Suchleiste"-Blocks
-    const x1 = targetRect.left + scrollX;
-    const y1 = targetRect.top  + scrollY;
-
-    // ENDE (Pfeilspitze): rechte Mitte der Suchleiste
-    const x2 = searchRect.right  + scrollX;
-    const y2 = searchRect.top + searchRect.height / 2 + scrollY;
-
-    // Kontrollpunkt für geschwungene Kurve
+    // Kontrollpunkt
     const cx = x1 - Math.abs(x2 - x1) * 0.1;
-    const cy = y1 - Math.abs(y1 - y2) * CONFIG.curvature;
+    const cy = y1 - Math.abs(y1 - y2) * curvature;
 
-    const pageW = Math.max(document.body.scrollWidth, window.innerWidth);
-    const pageH = Math.max(document.body.scrollHeight, window.innerHeight);
-
-    const svgNS = "http://www.w3.org/2000/svg";
-
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.id = "notion-arrow-svg";
-    svg.setAttribute("width",  pageW);
-    svg.setAttribute("height", pageH);
-    svg.style.cssText = [
-      "position:absolute",
-      "top:0",
-      "left:0",
-      "width:" + pageW + "px",
-      "height:" + pageH + "px",
-      "pointer-events:none",
-      "z-index:9999",
-      "overflow:visible",
-    ].join(";");
-
-    // ── Handgezeichneter Pfeilkopf (zwei Linien, kein Polygon) ──
+    // Pfeilkopf-Marker
     const defs   = document.createElementNS(svgNS, "defs");
     const marker = document.createElementNS(svgNS, "marker");
-    marker.setAttribute("id",           "arrowhead");
+    marker.setAttribute("id",           markerId);
     marker.setAttribute("markerWidth",  "10");
     marker.setAttribute("markerHeight", "10");
     marker.setAttribute("refX",         "5");
     marker.setAttribute("refY",         "5");
     marker.setAttribute("orient",       "auto");
 
-    // Obere Linie des Pfeilkopfs
-    const line1 = document.createElementNS(svgNS, "line");
-    line1.setAttribute("x1", "0"); line1.setAttribute("y1", "1");
-    line1.setAttribute("x2", "5"); line1.setAttribute("y2", "5");
-    line1.setAttribute("stroke",       CONFIG.color);
-    line1.setAttribute("stroke-width", "1.8");
-    line1.setAttribute("stroke-linecap", "round");
+    [["0","1","5","5"], ["0","9","5","5"]].forEach(function (coords) {
+      const line = document.createElementNS(svgNS, "line");
+      line.setAttribute("x1", coords[0]); line.setAttribute("y1", coords[1]);
+      line.setAttribute("x2", coords[2]); line.setAttribute("y2", coords[3]);
+      line.setAttribute("stroke",         color);
+      line.setAttribute("stroke-width",   "1.8");
+      line.setAttribute("stroke-linecap", "round");
+      marker.appendChild(line);
+    });
 
-    // Untere Linie des Pfeilkopfs
-    const line2 = document.createElementNS(svgNS, "line");
-    line2.setAttribute("x1", "0"); line2.setAttribute("y1", "9");
-    line2.setAttribute("x2", "5"); line2.setAttribute("y2", "5");
-    line2.setAttribute("stroke",       CONFIG.color);
-    line2.setAttribute("stroke-width", "1.8");
-    line2.setAttribute("stroke-linecap", "round");
-
-    marker.appendChild(line1);
-    marker.appendChild(line2);
     defs.appendChild(marker);
-    svg.appendChild(defs);
 
-    // ── Kurvenpfad ──
+    // Kurvenpfad
     const path = document.createElementNS(svgNS, "path");
-    path.setAttribute("d",            "M " + x1 + " " + y1 + " Q " + cx + " " + cy + " " + x2 + " " + y2);
-    path.setAttribute("stroke",       CONFIG.color);
-    path.setAttribute("stroke-width", CONFIG.strokeWidth);
-    path.setAttribute("fill",         "none");
+    path.setAttribute("d",              "M " + x1 + " " + y1 + " Q " + cx + " " + cy + " " + x2 + " " + y2);
+    path.setAttribute("stroke",         color);
+    path.setAttribute("stroke-width",   STROKE_WIDTH);
+    path.setAttribute("fill",           "none");
     path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("marker-end",   "url(#arrowhead)");
+    path.setAttribute("marker-end",     "url(#" + markerId + ")");
 
-    svg.appendChild(path);
+    return { defs: defs, path: path };
+  }
+
+
+  function drawAll() {
+    const old = document.getElementById("notion-arrows-svg");
+    if (old) old.remove();
+
+    const pageW = Math.max(document.body.scrollWidth, window.innerWidth);
+    const pageH = Math.max(document.body.scrollHeight, window.innerHeight);
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.id = "notion-arrows-svg";
+    svg.setAttribute("width",  pageW);
+    svg.setAttribute("height", pageH);
+    svg.style.cssText = [
+      "position:absolute",
+      "top:0",
+      "left:0",
+      "width:"  + pageW + "px",
+      "height:" + pageH + "px",
+      "pointer-events:none",
+      "z-index:9999",
+      "overflow:visible",
+    ].join(";");
+
+    ARROWS.forEach(function (cfg, i) {
+      const fromEl = findBlock(cfg.fromBlockId);
+      const toEl   = document.querySelector(cfg.toSelector);
+
+      if (!fromEl) {
+        console.warn("[notion-arrow] Block nicht gefunden: " + cfg.fromBlockId);
+        return;
+      }
+      if (!toEl) {
+        console.warn("[notion-arrow] Ziel nicht gefunden: " + cfg.toSelector);
+        return;
+      }
+
+      const parts = buildArrow(fromEl, toEl, cfg.color, cfg.curvature, svgNS, "arrowhead-" + i);
+      svg.appendChild(parts.defs);
+      svg.appendChild(parts.path);
+    });
 
     document.body.style.position = "relative";
     document.body.appendChild(svg);
   }
 
 
-  function init() {
-    const searchEl = findSearchBar();
-    const targetEl = findTargetBlock(CONFIG.targetBlockId);
+  setTimeout(drawAll, INIT_DELAY);
 
-    if (!searchEl) {
-      console.warn("[notion-arrow] Suchleiste nicht gefunden.");
-      return;
-    }
-    if (!targetEl) {
-      console.warn("[notion-arrow] Block nicht gefunden: " + CONFIG.targetBlockId);
-      return;
-    }
-
-    drawArrow(searchEl, targetEl);
-  }
-
-
-  setTimeout(init, CONFIG.initDelay);
-
-  let resizeTimer;
+  var resizeTimer;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(init, 150);
+    resizeTimer = setTimeout(drawAll, 150);
   });
 
   window.addEventListener("scroll", function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(init, 100);
+    resizeTimer = setTimeout(drawAll, 100);
   }, { passive: true });
 
 })();
