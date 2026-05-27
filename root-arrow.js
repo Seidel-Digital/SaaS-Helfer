@@ -44,7 +44,7 @@
       curvature:   0.4,
       toSide:      "left",
       curveDir:    "up",
-      endMidpoint: true,
+      endMidpoint: false,
       behind:      true,
     },
   ];
