@@ -2,6 +2,16 @@
  * notion-arrow.js
  * Verbindet mehrere Notion-Blöcke mit ihren Ziel-Elementen per handgezeichnetem SVG-Pfeil.
  * Einfügen in Super.so → Settings → Custom Code → Body (End)
+ *
+ * Optionen pro Pfeil:
+ *   fromBlockId   – Notion Block-ID des Startpunkts
+ *   toSelector    – CSS-Selektor des Ziels
+ *   color         – Farbe
+ *   curvature     – Stärke der Kurve (0 = gerade)
+ *   toSide        – "right" (Standard) | "left"  → welche Kante des Ziels
+ *   curveDir      – "up" (Standard)    | "down"  → Richtung der Kurve
+ *   endMidpoint   – true               → Pfeil endet auf halber Strecke (kein Pfeilkopf)
+ *   behind        – true               → Pfeil wird hinter den Seiteninhalt gerendert
  */
 
 (function () {
@@ -9,25 +19,33 @@
   // ─── KONFIGURATION ──────────────────────────────────────────────────────────
   const ARROWS = [
     {
-      // "Die Suchleiste" → Suchleiste
-      fromBlockId:  "block-36743843e4d080c7a5b0dc0a7aa312e1",
-      toSelector:   ".super-search-input",
-      color:        "#2a2a2a",
-      curvature:    0.5,
+      // "Die Suchleiste" → Suchleiste (oben links, Kurve nach oben)
+      fromBlockId: "block-36743843e4d080c7a5b0dc0a7aa312e1",
+      toSelector:  ".super-search-input",
+      color:       "#2a2a2a",
+      curvature:   0.5,
+      toSide:      "right",
+      curveDir:    "up",
     },
     {
-      // "Die Navigation" → Navigationsmenü
-      fromBlockId:  "block-36743843e4d08006938fee779dde8885",
-      toSelector:   ".super-navigation-menu__items",
-      color:        "#2a2a2a",
-      curvature:    0.5,
+      // "Die Navigation" → Navigationsmenü (Kurve nach UNTEN hängend)
+      fromBlockId: "block-36743843e4d08006938fee779dde8885",
+      toSelector:  ".super-navigation-menu__items",
+      color:       "#2a2a2a",
+      curvature:   0.6,
+      toSide:      "right",
+      curveDir:    "down",
     },
     {
-      // "Feedback-Formular" → Feedback-Anker
-      fromBlockId:  "block-36743843e4d080a5858ac7d9946708fa",
-      toSelector:   ".sff-anchor",
-      color:        "#2a2a2a",
-      curvature:    0.5,
+      // "Feedback-Formular" → Feedback-Anker (endet auf halber Strecke, hinter Inhalt)
+      fromBlockId: "block-36743843e4d080a5858ac7d9946708fa",
+      toSelector:  ".sff-anchor",
+      color:       "#2a2a2a",
+      curvature:   0.4,
+      toSide:      "left",
+      curveDir:    "up",
+      endMidpoint: true,
+      behind:      true,
     },
   ];
 
@@ -54,7 +72,7 @@
   }
 
 
-  function buildArrow(fromEl, toEl, color, curvature, svgNS, markerId) {
+  function buildArrow(fromEl, toEl, cfg, svgNS, markerId) {
     const fromRect = fromEl.getBoundingClientRect();
     const toRect   = toEl.getBoundingClientRect();
     const sx = window.scrollX;
@@ -64,59 +82,66 @@
     const x1 = fromRect.left + sx;
     const y1 = fromRect.top  + sy;
 
-    // ENDE (Pfeilspitze): rechte Mitte des Ziel-Elements
-    const x2 = toRect.right + sx;
-    const y2 = toRect.top + toRect.height / 2 + sy;
+    // VOLLES ZIEL
+    const xFull = (cfg.toSide === "left" ? toRect.left : toRect.right) + sx;
+    const yFull = toRect.top + toRect.height / 2 + sy;
 
-    // Kontrollpunkt
-    const cx = x1 - Math.abs(x2 - x1) * 0.1;
-    const cy = y1 - Math.abs(y1 - y2) * curvature;
+    // ENDPUNKT: halbe Strecke oder volles Ziel
+    const x2 = cfg.endMidpoint ? (x1 + xFull) / 2 : xFull;
+    const y2 = cfg.endMidpoint ? (y1 + yFull) / 2 : yFull;
 
-    // Pfeilkopf-Marker
-    const defs   = document.createElementNS(svgNS, "defs");
-    const marker = document.createElementNS(svgNS, "marker");
-    marker.setAttribute("id",           markerId);
-    marker.setAttribute("markerWidth",  "10");
-    marker.setAttribute("markerHeight", "10");
-    marker.setAttribute("refX",         "5");
-    marker.setAttribute("refY",         "5");
-    marker.setAttribute("orient",       "auto");
+    // KONTROLLPUNKT: oben oder unten hängend
+    const dx = Math.abs(x2 - x1);
+    const dy = Math.abs(y2 - y1);
+    const cx = x1 + (x2 - x1) * 0.3;
+    const cy = cfg.curveDir === "down"
+      ? y1 + dy * cfg.curvature          // nach unten hängen
+      : y1 - dy * cfg.curvature;         // nach oben wölben
 
-    [["0","1","5","5"], ["0","9","5","5"]].forEach(function (coords) {
-      const line = document.createElementNS(svgNS, "line");
-      line.setAttribute("x1", coords[0]); line.setAttribute("y1", coords[1]);
-      line.setAttribute("x2", coords[2]); line.setAttribute("y2", coords[3]);
-      line.setAttribute("stroke",         color);
-      line.setAttribute("stroke-width",   "1.8");
-      line.setAttribute("stroke-linecap", "round");
-      marker.appendChild(line);
-    });
+    // Pfeilkopf-Marker (nur wenn kein endMidpoint)
+    const defs = document.createElementNS(svgNS, "defs");
 
-    defs.appendChild(marker);
+    if (!cfg.endMidpoint) {
+      const marker = document.createElementNS(svgNS, "marker");
+      marker.setAttribute("id",           markerId);
+      marker.setAttribute("markerWidth",  "10");
+      marker.setAttribute("markerHeight", "10");
+      marker.setAttribute("refX",         "5");
+      marker.setAttribute("refY",         "5");
+      marker.setAttribute("orient",       "auto");
+
+      [["0","1","5","5"], ["0","9","5","5"]].forEach(function (c) {
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("x1", c[0]); line.setAttribute("y1", c[1]);
+        line.setAttribute("x2", c[2]); line.setAttribute("y2", c[3]);
+        line.setAttribute("stroke",         cfg.color);
+        line.setAttribute("stroke-width",   "1.8");
+        line.setAttribute("stroke-linecap", "round");
+        marker.appendChild(line);
+      });
+
+      defs.appendChild(marker);
+    }
 
     // Kurvenpfad
     const path = document.createElementNS(svgNS, "path");
     path.setAttribute("d",              "M " + x1 + " " + y1 + " Q " + cx + " " + cy + " " + x2 + " " + y2);
-    path.setAttribute("stroke",         color);
+    path.setAttribute("stroke",         cfg.color);
     path.setAttribute("stroke-width",   STROKE_WIDTH);
     path.setAttribute("fill",           "none");
     path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("marker-end",     "url(#" + markerId + ")");
+
+    if (!cfg.endMidpoint) {
+      path.setAttribute("marker-end", "url(#" + markerId + ")");
+    }
 
     return { defs: defs, path: path };
   }
 
 
-  function drawAll() {
-    const old = document.getElementById("notion-arrows-svg");
-    if (old) old.remove();
-
-    const pageW = Math.max(document.body.scrollWidth, window.innerWidth);
-    const pageH = Math.max(document.body.scrollHeight, window.innerHeight);
-    const svgNS = "http://www.w3.org/2000/svg";
-
+  function makeSvg(svgNS, id, pageW, pageH, zIndex) {
     const svg = document.createElementNS(svgNS, "svg");
-    svg.id = "notion-arrows-svg";
+    svg.id = id;
     svg.setAttribute("width",  pageW);
     svg.setAttribute("height", pageH);
     svg.style.cssText = [
@@ -126,30 +151,43 @@
       "width:"  + pageW + "px",
       "height:" + pageH + "px",
       "pointer-events:none",
-      "z-index:9999",
+      "z-index:" + zIndex,
       "overflow:visible",
     ].join(";");
+    return svg;
+  }
+
+
+  function drawAll() {
+    ["notion-arrows-front", "notion-arrows-behind"].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+
+    const pageW = Math.max(document.body.scrollWidth, window.innerWidth);
+    const pageH = Math.max(document.body.scrollHeight, window.innerHeight);
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    // Zwei SVG-Ebenen: vor und hinter dem Inhalt
+    const svgFront  = makeSvg(svgNS, "notion-arrows-front",  pageW, pageH, 9999);
+    const svgBehind = makeSvg(svgNS, "notion-arrows-behind", pageW, pageH, 0);
 
     ARROWS.forEach(function (cfg, i) {
       const fromEl = findBlock(cfg.fromBlockId);
       const toEl   = document.querySelector(cfg.toSelector);
 
-      if (!fromEl) {
-        console.warn("[notion-arrow] Block nicht gefunden: " + cfg.fromBlockId);
-        return;
-      }
-      if (!toEl) {
-        console.warn("[notion-arrow] Ziel nicht gefunden: " + cfg.toSelector);
-        return;
-      }
+      if (!fromEl) { console.warn("[notion-arrow] Block nicht gefunden: " + cfg.fromBlockId); return; }
+      if (!toEl)   { console.warn("[notion-arrow] Ziel nicht gefunden: "  + cfg.toSelector);  return; }
 
-      const parts = buildArrow(fromEl, toEl, cfg.color, cfg.curvature, svgNS, "arrowhead-" + i);
-      svg.appendChild(parts.defs);
-      svg.appendChild(parts.path);
+      const parts  = buildArrow(fromEl, toEl, cfg, svgNS, "arrowhead-" + i);
+      const target = cfg.behind ? svgBehind : svgFront;
+      target.appendChild(parts.defs);
+      target.appendChild(parts.path);
     });
 
     document.body.style.position = "relative";
-    document.body.appendChild(svg);
+    document.body.appendChild(svgBehind);
+    document.body.appendChild(svgFront);
   }
 
 
