@@ -28,16 +28,17 @@
       curveDir:    "up",
     },
     {
-      // "Die Navigation" → Navigationsmenü (Kurve nach UNTEN hängend)
+      // "Die Navigation" → Navigationsmenü
       fromBlockId: "block-36743843e4d08006938fee779dde8885",
       toSelector:  ".super-navigation-menu__items",
       color:       "#2a2a2a",
       curvature:   0.6,
       toSide:      "right",
       curveDir:    "down",
+      fromSide:    "bottomLeft",   // NEU
     },
     {
-      // "Feedback-Formular" → Feedback-Anker (endet auf halber Strecke, hinter Inhalt)
+      // "Feedback-Formular" → Feedback-Anker
       fromBlockId: "block-36743843e4d080a5858ac7d9946708fa",
       toSelector:  ".sff-anchor",
       color:       "#2a2a2a",
@@ -46,6 +47,7 @@
       curveDir:    "up",
       endMidpoint: false,
       behind:      true,
+      fromSide:    "right",        // NEU
     },
   ];
 
@@ -78,9 +80,19 @@
     const sx = window.scrollX;
     const sy = window.scrollY;
 
-    // START: obere linke Ecke des Quell-Blocks
-    const x1 = fromRect.left + sx;
-    const y1 = fromRect.top  + sy;
+    // START: abhängig von fromSide
+    var x1, y1;
+    if (cfg.fromSide === "bottomLeft") {
+      x1 = fromRect.left + sx;
+      y1 = fromRect.bottom + sy;
+    } else if (cfg.fromSide === "right") {
+      x1 = fromRect.right + sx;
+      y1 = fromRect.top + fromRect.height / 2 + sy;
+    } else {
+      // Default: oben links (bisheriges Verhalten)
+      x1 = fromRect.left + sx;
+      y1 = fromRect.top  + sy;
+    }
 
     // VOLLES ZIEL
     const xFull = (cfg.toSide === "left" ? toRect.left : toRect.right) + sx;
