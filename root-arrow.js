@@ -193,15 +193,28 @@
 
   setTimeout(drawAll, INIT_DELAY);
 
+  // Resize & Scroll — unverändert
   var resizeTimer;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(drawAll, 150);
   });
-
   window.addEventListener("scroll", function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(drawAll, 100);
   }, { passive: true });
 
+  // NEU: SVGs sofort entfernen, wenn Super.so die Seite wechselt
+  var observer = new MutationObserver(function () {
+    var currentPath = window.location.pathname;
+    if (currentPath !== observer._lastPath) {
+      observer._lastPath = currentPath;
+      ["notion-arrows-front", "notion-arrows-behind"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+      });
+    }
+  });
+  observer._lastPath = window.location.pathname;
+  observer.observe(document.body, { childList: true, subtree: false });
 })();
