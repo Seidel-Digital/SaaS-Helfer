@@ -12,5 +12,5 @@
 #  Cache-Control: no-cache
 /style.css
   Cache-Control: public, max-age=86400, stale-while-revalidate=3600
-#/suche-arrow.js
+#/root-arrow.js
 #  Cache-Control: no-cache
