@@ -12,6 +12,7 @@
  *   curveDir      – "up" (Standard)    | "down"  → Richtung der Kurve
  *   endMidpoint   – true               → Pfeil endet auf halber Strecke (kein Pfeilkopf)
  *   behind        – true               → Pfeil wird hinter den Seiteninhalt gerendert
+ *   fromSide      – "topCenter"        → Mitte oben | "bottomLeft" | "right" | default: oben links
  */
 
 (function () {
@@ -35,19 +36,19 @@
       curvature:   0.6,
       toSide:      "right",
       curveDir:    "down",
-      fromSide:    "bottomLeft",   // NEU
+      fromSide:    "bottomLeft",
     },
     {
       // "Feedback-Formular" → Feedback-Anker
       fromBlockId: "block-36743843e4d080a5858ac7d9946708fa",
       toSelector:  ".sff-anchor",
       color:       "#2a2a2a",
-      curvature:   0.4,
+      curvature:   0.18,
       toSide:      "left",
       curveDir:    "down",
       endMidpoint: false,
       behind:      true,
-      fromSide:    "right",        // NEU
+      fromSide:    "topCenter",
     },
   ];
 
@@ -82,14 +83,17 @@
 
     // START: abhängig von fromSide
     var x1, y1;
-    if (cfg.fromSide === "bottomLeft") {
+    if (cfg.fromSide === "topCenter") {
+      x1 = fromRect.left + fromRect.width / 2 + sx;
+      y1 = fromRect.top + sy;
+    } else if (cfg.fromSide === "bottomLeft") {
       x1 = fromRect.left + sx;
       y1 = fromRect.bottom + sy;
     } else if (cfg.fromSide === "right") {
       x1 = fromRect.right + sx;
       y1 = fromRect.top + fromRect.height / 2 + sy;
     } else {
-      // Default: oben links (bisheriges Verhalten)
+      // Default: oben links
       x1 = fromRect.left + sx;
       y1 = fromRect.top  + sy;
     }
@@ -103,12 +107,11 @@
     const y2 = cfg.endMidpoint ? (y1 + yFull) / 2 : yFull;
 
     // KONTROLLPUNKT: oben oder unten hängend
-    const dx = Math.abs(x2 - x1);
     const dy = Math.abs(y2 - y1);
     const cx = x1 + (x2 - x1) * 0.3;
     const cy = cfg.curveDir === "down"
-      ? y1 + dy * cfg.curvature          // nach unten hängen
-      : y1 - dy * cfg.curvature;         // nach oben wölben
+      ? y1 + dy * cfg.curvature
+      : y1 - dy * cfg.curvature;
 
     // Pfeilkopf-Marker (nur wenn kein endMidpoint)
     const defs = document.createElementNS(svgNS, "defs");
@@ -180,7 +183,6 @@
     const pageH = Math.max(document.body.scrollHeight, window.innerHeight);
     const svgNS = "http://www.w3.org/2000/svg";
 
-    // Zwei SVG-Ebenen: vor und hinter dem Inhalt
     const svgFront  = makeSvg(svgNS, "notion-arrows-front",  pageW, pageH, 9999);
     const svgBehind = makeSvg(svgNS, "notion-arrows-behind", pageW, pageH, 0);
 
@@ -205,7 +207,6 @@
 
   setTimeout(drawAll, INIT_DELAY);
 
-  // Resize & Scroll — unverändert
   var resizeTimer;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
@@ -216,7 +217,6 @@
     resizeTimer = setTimeout(drawAll, 100);
   }, { passive: true });
 
-  // NEU: SVGs sofort entfernen, wenn Super.so die Seite wechselt
   var observer = new MutationObserver(function () {
     var currentPath = window.location.pathname;
     if (currentPath !== observer._lastPath) {
