@@ -92,8 +92,7 @@
     } else if (cfg.fromSide === "topRight") {
       x1 = fromRect.left + fromRect.width * 0.75 + sx;
       y1 = fromRect.top + sy;
-  }
-  } else if (cfg.fromSide === "right") {
+    } else if (cfg.fromSide === "right") {
       x1 = fromRect.right + sx;
       y1 = fromRect.top + fromRect.height / 2 + sy;
     } else {
