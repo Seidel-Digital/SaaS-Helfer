@@ -50,6 +50,7 @@
       curvature:   0.5,
       toSide:      "right",
       curveDir:    "up",
+      toOffset: 1.0,
     },
     {
       // "Die Navigation" → Navigationsmenü
