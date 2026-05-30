@@ -57,9 +57,10 @@
       toSelector:  ".super-navigation-menu__items",
       color:       "#2a2a2a",
       curvature:   0.6,
-      toSide:      "right",
       curveDir:    "down",
-      fromSide:    "bottomRight",
+      fromSide: "bottomLeft",
+      toSide:   "right",
+      toOffset: 1.0,
     },
     {
       // "Feedback-Formular" → Feedback-Anker
