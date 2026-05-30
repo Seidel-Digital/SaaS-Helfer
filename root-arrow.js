@@ -33,7 +33,7 @@
       fromBlockId: "block-36743843e4d08006938fee779dde8885",
       toSelector:  ".super-navigation-menu__items",
       color:       "#2a2a2a",
-      curvature:   0.4,
+      curvature:   0.2,
       toSide:      "right",
       curveDir:    "down",
       fromSide:    "bottomLeft",
@@ -48,7 +48,7 @@
       curveDir:    "down",
       endMidpoint: false,
       behind:      true,
-      fromSide: "topCenter",
+      fromSide: "topRight",
     },
   ];
 
