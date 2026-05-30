@@ -73,7 +73,7 @@
       toOffset:    0.25,
       endMidpoint: false,
       behind:      true,
-      fromSide:    "topCenter",
+      fromSide:    "topLeft",
       cubic:       true,
       cp1:         { x: 0.4, y: 0.3 },
       cp2:         { x: 0.8, y: -0.2 },
@@ -114,8 +114,8 @@
     if (cfg.fromSide === "topCenter") {
       x1 = fromRect.left + fromRect.width / 2 + sx;
       y1 = fromRect.top + sy;
-    } else if (cfg.fromSide === "topRight") {
-      x1 = fromRect.left + fromRect.width * 0.75 + sx;
+    } else if (cfg.fromSide === "topLeft") {
+      x1 = fromRect.left + fromRect.width * 0.25 + sx;
       y1 = fromRect.top + sy;
     } else if (cfg.fromSide === "bottomLeft") {
       x1 = fromRect.left + sx;
