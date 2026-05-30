@@ -43,7 +43,7 @@
       fromBlockId: "block-36743843e4d080a5858ac7d9946708fa",
       toSelector:  ".sff-anchor",
       color:       "#2a2a2a",
-      curvature:   0.18,
+      curvature:   0.1,
       toSide:      "left",
       curveDir:    "down",
       endMidpoint: false,
